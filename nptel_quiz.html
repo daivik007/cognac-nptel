@@ -1,0 +1,1338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NPTEL · Cognitive Psychology Quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0d0f14;
+  --surface: #13161d;
+  --surface2: #1a1e28;
+  --border: #252a38;
+  --accent: #4f8ef7;
+  --accent2: #7c3aed;
+  --green: #22c55e;
+  --red: #ef4444;
+  --yellow: #f59e0b;
+  --text: #e8eaf0;
+  --text-dim: #8892a4;
+  --text-faint: #4a5568;
+  --radius: 12px;
+  --radius-sm: 8px;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { font-size:16px; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 400;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width:6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius:3px; }
+
+/* ── SCREENS ── */
+.screen { display:none; min-height:100vh; }
+.screen.active { display:flex; }
+
+/* ══════════════ HOME ══════════════ */
+#home {
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 60px 24px 40px;
+}
+.home-header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+.nptel-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 99px;
+  padding: 6px 16px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-dim);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+.nptel-badge span { color: var(--accent); }
+h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+h1 em {
+  font-style: normal;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.home-sub {
+  color: var(--text-dim);
+  font-size: 15px;
+  margin-top: 12px;
+  font-weight: 300;
+}
+.stat-row {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 24px;
+  flex-wrap: wrap;
+}
+.stat-chip {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 99px;
+  padding: 5px 14px;
+  font-size: 13px;
+  color: var(--text-dim);
+}
+.stat-chip b { color: var(--text); }
+
+/* Mode cards */
+.modes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px;
+  width: 100%;
+  max-width: 860px;
+  margin-bottom: 32px;
+}
+.mode-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px 20px;
+  cursor: pointer;
+  transition: border-color .2s, transform .15s, background .2s;
+  position: relative;
+  overflow: hidden;
+}
+.mode-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity .2s;
+}
+.mode-card:hover { transform: translateY(-2px); border-color: var(--accent); }
+.mode-card.selected { border-color: var(--accent); background: #1a2035; }
+.mode-icon {
+  font-size: 28px;
+  margin-bottom: 12px;
+  display: block;
+}
+.mode-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  margin-bottom: 6px;
+}
+.mode-desc {
+  font-size: 12px;
+  color: var(--text-dim);
+  line-height: 1.5;
+}
+
+/* Week selector */
+.week-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  width: 100%;
+  max-width: 860px;
+  margin-bottom: 24px;
+  display: none;
+}
+.week-panel.visible { display: block; }
+.week-panel-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 14px;
+  color: var(--text-dim);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.week-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.week-chip {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 99px;
+  padding: 6px 16px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all .15s;
+  user-select: none;
+}
+.week-chip:hover { border-color: var(--accent); color: var(--accent); }
+.week-chip.selected { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 500; }
+.week-chip.disabled { opacity: 0.35; cursor: not-allowed; }
+
+.start-btn {
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 14px 48px;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  color: #fff;
+  cursor: pointer;
+  transition: opacity .15s, transform .15s;
+  letter-spacing: 0.02em;
+}
+.start-btn:hover { opacity: .9; transform: translateY(-1px); }
+.start-btn:disabled { opacity: .35; cursor: not-allowed; transform: none; }
+
+/* ══════════════ QUIZ ══════════════ */
+#quiz { flex-direction: column; min-height: 100vh; }
+
+.quiz-topbar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0 24px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.quiz-logo {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 15px;
+  color: var(--accent);
+}
+.topbar-mode {
+  font-size: 12px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 99px;
+  padding: 4px 12px;
+  color: var(--text-dim);
+}
+.quit-btn {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 5px 12px;
+  color: var(--text-dim);
+  font-size: 12px;
+  cursor: pointer;
+  transition: all .15s;
+  font-family: 'DM Sans', sans-serif;
+}
+.quit-btn:hover { border-color: var(--red); color: var(--red); }
+
+.quiz-body {
+  display: flex;
+  flex: 1;
+  gap: 0;
+  max-width: 1280px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 0;
+}
+
+/* Left panel - Question */
+.quiz-main {
+  flex: 1;
+  padding: 32px 40px 40px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Progress */
+.progress-section {
+  margin-bottom: 28px;
+}
+.progress-bar-wrap {
+  background: var(--surface2);
+  border-radius: 99px;
+  height: 6px;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+.progress-bar-fill {
+  height: 100%;
+  border-radius: 99px;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  transition: width .4s ease;
+}
+.progress-stats {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.pstat {
+  font-size: 12px;
+  color: var(--text-dim);
+}
+.pstat b { color: var(--text); }
+.pstat.correct b { color: var(--green); }
+.pstat.wrong b { color: var(--red); }
+
+/* Question card */
+.q-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px 28px 24px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.q-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+.q-number {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 12px;
+  color: var(--accent);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.q-week-tag {
+  font-size: 11px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 99px;
+  padding: 2px 10px;
+  color: var(--text-dim);
+}
+.practice-repeat-tag {
+  font-size: 11px;
+  background: #2d1a0a;
+  border: 1px solid #7c3310;
+  border-radius: 99px;
+  padding: 2px 10px;
+  color: var(--yellow);
+  display: none;
+}
+.practice-repeat-tag.show { display: inline-block; }
+
+.q-text {
+  font-size: 16px;
+  line-height: 1.65;
+  font-weight: 400;
+  margin-bottom: 24px;
+  flex: 1;
+}
+
+/* Options */
+.options-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.option-btn {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px 18px;
+  text-align: left;
+  cursor: pointer;
+  transition: all .15s;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  line-height: 1.4;
+}
+.option-label {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 12px;
+  color: var(--text-dim);
+  min-width: 20px;
+  transition: color .15s;
+}
+.option-btn:hover:not(:disabled) {
+  border-color: var(--accent);
+  background: #1a2035;
+}
+.option-btn:hover:not(:disabled) .option-label { color: var(--accent); }
+.option-btn.correct {
+  border-color: var(--green);
+  background: #0d2b1a;
+  color: var(--green);
+}
+.option-btn.correct .option-label { color: var(--green); }
+.option-btn.wrong {
+  border-color: var(--red);
+  background: #2b0d0d;
+  color: var(--red);
+}
+.option-btn.wrong .option-label { color: var(--red); }
+.option-btn:disabled { cursor: default; }
+
+/* Explanation */
+.explanation-box {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  font-size: 13px;
+  color: var(--text-dim);
+  line-height: 1.6;
+  margin-bottom: 16px;
+  display: none;
+  animation: fadeUp .25s ease;
+}
+.explanation-box.show { display: block; }
+.explanation-box strong { color: var(--text); display: block; margin-bottom: 4px; font-size: 12px; letter-spacing: 0.05em; text-transform: uppercase; }
+
+@keyframes fadeUp {
+  from { opacity:0; transform: translateY(6px); }
+  to { opacity:1; transform: translateY(0); }
+}
+
+.next-btn {
+  background: var(--accent);
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 11px 28px;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  color: #fff;
+  cursor: pointer;
+  transition: opacity .15s, transform .15s;
+  display: none;
+}
+.next-btn.show { display: block; }
+.next-btn:hover { opacity: .9; transform: translateY(-1px); }
+
+.back-btn {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 11px 20px;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: all .15s;
+  display: none;
+}
+.back-btn.show { display: block; }
+.back-btn:hover { border-color: var(--text-dim); color: var(--text); }
+
+/* Right panel - Answer tracker */
+.quiz-sidebar {
+  width: 240px;
+  min-width: 240px;
+  background: var(--surface);
+  border-left: 1px solid var(--border);
+  padding: 24px 16px;
+  overflow-y: auto;
+  position: sticky;
+  top: 56px;
+  height: calc(100vh - 56px);
+}
+.sidebar-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 12px;
+  color: var(--text-faint);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+.tracker-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.tracker-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  transition: all .15s;
+  font-size: 12px;
+}
+.tracker-row.current {
+  border-color: var(--accent);
+  background: #1a2035;
+}
+.tracker-row.answered-correct { background: #0d2b1a; border-color: #1a5a35; }
+.tracker-row.answered-wrong { background: #2b0d0d; border-color: #5a1a1a; }
+.tracker-dot {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 10px;
+  flex-shrink: 0;
+  transition: all .15s;
+}
+.tracker-row.answered-correct .tracker-dot { background: var(--green); border-color: var(--green); color: #fff; }
+.tracker-row.answered-wrong .tracker-dot { background: var(--red); border-color: var(--red); color: #fff; }
+.tracker-row.current .tracker-dot { border-color: var(--accent); color: var(--accent); }
+.tracker-row.locked { cursor: not-allowed; opacity: 0.4; }
+.tracker-q-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 160px;
+}
+.tracker-row.answered-correct .tracker-q-text { color: var(--green); opacity: .7; }
+.tracker-row.answered-wrong .tracker-q-text { color: var(--red); opacity: .7; }
+
+/* ══════════════ RESULTS ══════════════ */
+#results {
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 60px 24px 48px;
+}
+.results-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 40px;
+  max-width: 700px;
+  width: 100%;
+  text-align: center;
+}
+.results-emoji {
+  font-size: 52px;
+  margin-bottom: 16px;
+  display: block;
+}
+.results-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 28px;
+  margin-bottom: 8px;
+}
+.results-sub {
+  color: var(--text-dim);
+  font-size: 14px;
+  margin-bottom: 32px;
+}
+.results-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 32px;
+}
+.res-stat {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 20px 12px;
+}
+.res-stat-val {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 28px;
+  display: block;
+  margin-bottom: 4px;
+}
+.res-stat-val.green { color: var(--green); }
+.res-stat-val.red { color: var(--red); }
+.res-stat-val.accent { color: var(--accent); }
+.res-stat-label {
+  font-size: 11px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+.results-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.res-btn {
+  padding: 11px 24px;
+  border-radius: var(--radius-sm);
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all .15s;
+}
+.res-btn-primary {
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border: none;
+  color: #fff;
+}
+.res-btn-primary:hover { opacity: .9; }
+.res-btn-secondary {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+}
+.res-btn-secondary:hover { border-color: var(--text-dim); color: var(--text); }
+
+/* review panel */
+.review-section {
+  max-width: 700px;
+  width: 100%;
+  margin-top: 32px;
+}
+.review-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--text-dim);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.review-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 16px 18px;
+  margin-bottom: 10px;
+}
+.review-item.correct { border-left: 3px solid var(--green); }
+.review-item.wrong { border-left: 3px solid var(--red); }
+.review-q { font-size: 13px; line-height: 1.55; margin-bottom: 8px; }
+.review-answer { font-size: 12px; color: var(--text-dim); }
+.review-answer span { font-weight: 500; }
+.review-answer .correct-ans { color: var(--green); }
+.review-answer .wrong-ans { color: var(--red); }
+
+/* ══════════════ RESPONSIVE ══════════════ */
+@media (max-width: 768px) {
+  .quiz-sidebar { display: none; }
+  .quiz-main { padding: 20px 16px 32px; }
+  .results-stats { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 480px) {
+  .modes-grid { grid-template-columns: 1fr 1fr; }
+  .results-stats { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════ HOME SCREEN ═══════════ -->
+<div id="home" class="screen active">
+  <div class="home-header">
+    <div class="nptel-badge"><span>NPTEL</span> · IIT Guwahati</div>
+    <h1>Cognitive<br><em>Psychology</em> Quiz</h1>
+    <p class="home-sub">Introduction to Cognitive Psychology — All 12 weeks, 120 questions</p>
+    <div class="stat-row">
+      <div class="stat-chip"><b id="totalQCount">80</b> Questions</div>
+      <div class="stat-chip"><b>12</b> Weeks Available</div>
+    </div>
+  </div>
+
+  <div class="modes-grid">
+    <div class="mode-card" data-mode="weekly" onclick="selectMode(this)">
+      <span class="mode-icon">📅</span>
+      <div class="mode-title">Week Quiz</div>
+      <div class="mode-desc">Practice questions from a single week in order.</div>
+    </div>
+    <div class="mode-card" data-mode="random" onclick="selectMode(this)">
+      <span class="mode-icon">🔀</span>
+      <div class="mode-title">Random Session</div>
+      <div class="mode-desc">All selected weeks, randomised. Great for mixed practice.</div>
+    </div>
+    <div class="mode-card" data-mode="full" onclick="selectMode(this)">
+      <span class="mode-icon">📋</span>
+      <div class="mode-title">Full Quiz</div>
+      <div class="mode-desc">All questions from all weeks, randomised.</div>
+    </div>
+    <div class="mode-card" data-mode="practice" onclick="selectMode(this)">
+      <span class="mode-icon">🔁</span>
+      <div class="mode-title">Practice Mode</div>
+      <div class="mode-desc">Wrong answers repeat until you get them right.</div>
+    </div>
+  </div>
+
+  <div class="week-panel" id="weekPanel">
+    <div class="week-panel-title">Select Weeks</div>
+    <div class="week-chips" id="weekChips"></div>
+  </div>
+
+  <button class="start-btn" id="startBtn" disabled onclick="startQuiz()">Start Quiz →</button>
+</div>
+
+<!-- ═══════════ QUIZ SCREEN ═══════════ -->
+<div id="quiz" class="screen">
+  <div class="quiz-topbar">
+    <div class="quiz-logo">CogPsych</div>
+    <div class="topbar-mode" id="topbarMode">—</div>
+    <button class="quit-btn" onclick="quitQuiz()">✕ Quit</button>
+  </div>
+  <div class="quiz-body">
+    <div class="quiz-main">
+      <div class="progress-section">
+        <div class="progress-bar-wrap">
+          <div class="progress-bar-fill" id="progressFill" style="width:0%"></div>
+        </div>
+        <div class="progress-stats">
+          <div class="pstat">Q <b id="pCurrent">1</b> of <b id="pTotal">10</b></div>
+          <div class="pstat correct">✓ Correct <b id="pCorrect">0</b></div>
+          <div class="pstat wrong">✗ Wrong <b id="pWrong">0</b></div>
+          <div class="pstat">Remaining <b id="pRemaining">10</b></div>
+          <div class="pstat">Accuracy <b id="pAccuracy">—</b></div>
+        </div>
+      </div>
+
+      <div class="q-card">
+        <div class="q-meta">
+          <span class="q-number" id="qNumber">Q 1</span>
+          <span class="q-week-tag" id="qWeekTag">Week 1</span>
+          <span class="practice-repeat-tag" id="repeatTag">↻ Repeat</span>
+        </div>
+        <div class="q-text" id="qText"></div>
+        <div class="options-list" id="optionsList"></div>
+        <div class="explanation-box" id="explanationBox">
+          <strong>Explanation</strong>
+          <span id="explanationText"></span>
+        </div>
+        <div style="display:flex; gap:10px; justify-content:flex-end; align-items:center;">
+          <button class="back-btn" id="backBtn" onclick="prevQuestion()">← Back</button>
+          <button class="next-btn" id="nextBtn" onclick="nextQuestion()">Next →</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="quiz-sidebar">
+      <div class="sidebar-title">Answer Tracker</div>
+      <div class="tracker-grid" id="trackerGrid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ RESULTS SCREEN ═══════════ -->
+<div id="results" class="screen">
+  <div class="results-card">
+    <span class="results-emoji" id="resEmoji">🎉</span>
+    <div class="results-title" id="resTitle">Quiz Complete!</div>
+    <div class="results-sub" id="resSub">Here's how you did</div>
+    <div class="results-stats">
+      <div class="res-stat">
+        <span class="res-stat-val accent" id="resScore">0%</span>
+        <span class="res-stat-label">Score</span>
+      </div>
+      <div class="res-stat">
+        <span class="res-stat-val green" id="resCorrect">0</span>
+        <span class="res-stat-label">Correct</span>
+      </div>
+      <div class="res-stat">
+        <span class="res-stat-val red" id="resWrong">0</span>
+        <span class="res-stat-label">Wrong</span>
+      </div>
+    </div>
+    <div class="results-actions">
+      <button class="res-btn res-btn-primary" onclick="goHome()">← Back to Home</button>
+      <button class="res-btn res-btn-secondary" onclick="retryQuiz()">↻ Retry Same</button>
+    </div>
+  </div>
+
+  <div class="review-section">
+    <div class="review-title">Review</div>
+    <div id="reviewList"></div>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════════════════════
+//  DATA
+// ════════════════════════════════════════════════
+const QUESTIONS = {
+  10: [
+    { q: "_____ is defined as 'going beyond the information given.'", opts: ["Problem solving","Thinking","Decision making","Remembering"], ans: 1, exp: "Thinking — it involves going beyond the information given to generate new understanding." },
+    { q: "Which of the following is an example of an ill-defined problem?", opts: ["Putting together your schedule of classes for next semester","Constructing a proof in geometry","Solving an algebra problem","Solving the Tower of Hanoi problem"], ans: 0, exp: "Putting together your schedule — ill-defined problems lack clear goals and solution paths." },
+    { q: "The problem-solving technique of ______ involves comparing the goal with the starting point, thinking of possible ways to overcome the distance between them, and choosing the best one.", opts: ["Generate and test","Means end analysis","Reasoning by analogy","Mental set"], ans: 1, exp: "Means-end analysis — it reduces the difference between the current state and the goal state step by step." },
+    { q: "Mental set:", opts: ["Can only be induced by large amount of practice","Can lead us to make unwarranted assumptions about a problem","Involves the use of analogy to solve a problem","Aids problem solving because it supplies an efficient problem representation"], ans: 1, exp: "Mental set can lead us to make unwarranted assumptions about a problem, thereby hindering new solutions." },
+    { q: "When one recalls the solution to an old problem and uses it to solve a new, similarly structured problem, one has reasoned by:", opts: ["Introspection","Analysis","Analogy","Backtracking"], ans: 2, exp: "Analogy — solving a new problem by recalling a similar previous solution is reasoning by analogy." },
+    { q: "______ is a very important technique for solving the Towers of Hanoi problem.", opts: ["Means-end analysis","Generate-and-test","Working backward","Trial and error"], ans: 2, exp: "Working backward is effective in the Tower of Hanoi — the solver starts from the goal state and determines the sequence of moves needed." },
+    { q: "Which of the following is the best example of a well-defined problem?", opts: ["Creating a guest list for a party","Finding a detour around a traffic problem","Constructing a proof in algebra","Writing a paper for your cognition class"], ans: 2, exp: "Constructing a proof in algebra — well-defined problems have clear goals, rules, and solution methods." },
+    { q: "Psychologists focus on well-defined problems because:", opts: ["They are easy to present","They often take weeks or months to solve","They can be complicated to score","They accurately mirror real world problems"], ans: 0, exp: "Well-defined problems are easy to present and study systematically in experiments." },
+    { q: "Adoption of a rigid mental set toward an object is called:", opts: ["Well-defined thinking","Ill-defined thinking","Functional fixedness","Object set"], ans: 2, exp: "Functional fixedness — it involves a rigid mental set about an object's usual use, blocking creative solutions." },
+    { q: "The General Problem Solver (GPS) is a computer program that solves problems in crypt arithmetic and logic using:", opts: ["Means end analysis","Generate-and-test","Reasoning by analogy","Introspection"], ans: 0, exp: "Means-end analysis — the General Problem Solver program uses this strategy to reduce differences between states." }
+  ],
+  10: [
+    { q: "_____ is defined as 'going beyond the information given.'", opts: ["Problem solving","Thinking","Decision making","Remembering"], ans: 1, exp: "Thinking — it involves going beyond the information given to reach new conclusions." },
+    { q: "Which of the following is an example of an ill-defined problem?", opts: ["Putting together your schedule of classes for next semester","Constructing a proof in geometry","Solving an algebra problem","Solving the Tower of Hanoi problem"], ans: 0, exp: "Putting together your schedule — ill-defined problems lack clear goals and solution paths." },
+    { q: "The problem-solving technique of ______ involves comparing the goal with the starting point, thinking of possible ways to overcome the distance between them, and choosing the best one.", opts: ["Generate and test","Means-end analysis","Reasoning by analogy","Mental set"], ans: 1, exp: "Means-end analysis — it reduces the difference between the current state and the goal state step by step." },
+    { q: "Mental set:", opts: ["Can only be induced by large amount of practice","Can lead us to make unwarranted assumptions about a problem","Involves the use of analogy to solve a problem","Aids problem solving because it supplies an efficient problem representation"], ans: 1, exp: "Mental set can lead us to make unwarranted assumptions about a problem, thereby hindering new solutions." },
+    { q: "When one recalls the solution to an old problem and uses it to solve a new, similarly structured problem, one has reasoned by:", opts: ["Introspection","Analysis","Analogy","Backtracking"], ans: 2, exp: "Analogy — solving a new problem by recalling a similar previous solution is reasoning by analogy." },
+    { q: "______ is a very important technique for solving the Towers of Hanoi problem.", opts: ["Means-end analysis","Generate-and-test","Working backward","Trial and error"], ans: 2, exp: "Working backward is effective in the Tower of Hanoi — the solver starts from the goal state and determines moves needed to reach it from the initial state." },
+    { q: "Which of the following is the best example of a well-defined problem?", opts: ["Creating a guest list for a party","Finding a detour around a traffic problem","Constructing a proof in algebra","Writing a paper for your cognition class"], ans: 2, exp: "Constructing a proof in algebra — well-defined problems have clear goals, rules, and solution methods." },
+    { q: "Psychologists focus on well-defined problems because:", opts: ["They are easy to present","They often take weeks or months to solve","They can be complicated to score","They accurately mirror real world problems"], ans: 0, exp: "Well-defined problems are easy to present and study systematically in experiments." },
+    { q: "Adoption of a rigid mental set toward an object is called:", opts: ["Well-defined thinking","Ill-defined thinking","Functional fixedness","Object set"], ans: 2, exp: "Functional fixedness — a rigid mental set about an object's usual use that hinders creative problem solving." },
+    { q: "The General Problem Solver (GPS) is a computer program that solves problems in cryptarithmetic and logic using:", opts: ["Means-end analysis","Generate-and-test","Reasoning by analogy","Introspection"], ans: 0, exp: "Means-end analysis — the General Problem Solver uses this strategy to reduce differences between current and goal states." }
+  ],
+  9: [
+    { q: "Which of the following is/are generally agreed upon as necessary criteria for claiming that a communication system is a language?", opts: ["Regularity","Productivity","Referentiality","Both regularity and productivity"], ans: 3, exp: "Both regularity and productivity — language follows systematic rules and allows speakers to produce unlimited new sentences." },
+    { q: "Infinite combinations of ideas can be expressed in language. In other words, language is:", opts: ["Regular","Interpersonal","Productive","Referential"], ans: 2, exp: "Productive — language enables the expression of an infinite number of ideas using a finite set of symbols." },
+    { q: "A fundamental problem of speech perception, according to Miller, is that:", opts: ["Speech is discrete rather than continuous","A single phoneme sounds different depending on its context","Hearing is less accurate than vision","Missing phonemes can render words incomprehensible"], ans: 1, exp: "A single phoneme sounds different depending on its context, which creates difficulty in speech perception." },
+    { q: "The branch of linguistics devoted to the study of meaning:", opts: ["Phonetics","Semantics","Morphology","Pragmatics"], ans: 1, exp: "Semantics — it is the branch of linguistics that studies the meaning of words and sentences." },
+    { q: "Did she say 'many' or 'men knee'? This type of ambiguity is referred to as:", opts: ["Phonetic","Lexical","Syntactic","Semantic"], ans: 0, exp: "Phonetic ambiguity — the same sound pattern can be interpreted as different words or phrases." },
+    { q: "The underlying knowledge that allows people to produce and comprehend their language is called:", opts: ["Linguistic performance","Linguistic competence","Linguistic production","Grammatical behaviour"], ans: 1, exp: "Linguistic competence — it refers to the underlying knowledge of language that allows people to produce and understand sentences." },
+    { q: "The study of the ways in which sounds can be combined in any given language is called:", opts: ["Phonology","Morphology","Syntax","Grammar"], ans: 0, exp: "Phonology — it studies the rules governing how sounds are combined in a language." },
+    { q: "We notice ambiguities in sentences:", opts: ["All the time","In 'garden path' sentences","When they are humorous","When they make no sense at all"], ans: 1, exp: "In 'garden path' sentences — such sentences initially lead readers toward an incorrect interpretation." },
+    { q: "According to research, which of the following sets of sentences would take the longest amount of time to read and comprehend?", opts: ["We took the dog to the vet. The dog was nervous.","Sara drove the car to the market. The car ran out of gas.","She wrapped the Christmas presents. The sweater needed a larger box.","We got some beer out of the car. The beer was warm."], ans: 2, exp: "She wrapped the Christmas presents. The sweater needed a larger box — the connection requires additional inference, taking longest to process." },
+    { q: "Speech acts in which the utterance itself is the action — such as 'You're fired!' — are considered to be which type of speech act?", opts: ["Declaration","Directive","Commissive","Expressive"], ans: 0, exp: "Declaration — the utterance itself performs the action, such as saying 'You're fired.'" }
+  ],
+  8: [
+    { q: "Participants doing mental imagery tasks tend to show brain activity in the:", opts: ["Temporal lobe","Parietal lobe","Frontal lobe","Occipital lobe"], ans: 3, exp: "Occipital lobe — mental imagery activates brain areas involved in visual processing." },
+    { q: "How do people represent and navigate in and through space? This is a question of:", opts: ["Navigational cognition","Representational cognition","Spatial cognition","Visual cognition"], ans: 2, exp: "Spatial cognition — it refers to how people represent and navigate through space." },
+    { q: "Images can prime the visual pathway, making it easier to detect a faint stimulus. This is an example of:", opts: ["Perceptual equivalence","Spatial equivalence","Structural equivalence","Transformational equivalence"], ans: 0, exp: "Perceptual equivalence — mental images can activate the same perceptual systems as actual visual stimuli." },
+    { q: "Which of the following questions would take you the LONGEST TIME to answer?", opts: ["Which is faster, a turtle or a sports car?","Which is faster, a turtle or a cheetah?","Which is faster, a turtle or a caterpillar?","Which is faster, a caterpillar or a cat?"], ans: 2, exp: "Turtle vs. caterpillar — comparisons between items of similar speed take longer in mental imagery tasks (symbolic distance effect)." },
+    { q: "The relational-organizational hypothesis is supported by:", opts: ["The effectiveness of the method of loci","The fact that concrete words are recalled better than abstract words","The fact that non-interactive images do not facilitate recall whereas interactive images do","The effectiveness of the pegword method"], ans: 2, exp: "Non-interactive images don't facilitate recall while interactive images do — organizing items into meaningful relations improves memory." },
+    { q: "Paivio's ____ hypothesis argues that long-term memory contains two separate systems that represent information in verbal and visual forms, respectively.", opts: ["Picture-word","Dual code","Visuo-verbal","Relational-Organizational"], ans: 1, exp: "Dual code — Paivio proposed two separate but interconnected verbal and visual memory systems." },
+    { q: "Which of the following methods would most help you to remember the word pair 'elephant-cigar'?", opts: ["Repeating the word elephant over and over while visualizing a cigar","Visualizing an elephant smoking a cigar","Repeating both words over and over to yourself","Visualizing an elephant and a cigar, not touching each other"], ans: 1, exp: "Visualizing an elephant smoking a cigar — interactive imagery strengthens associative memory." },
+    { q: "Your mental map of your campus is probably:", opts: ["Larger than reality","Smaller than reality","More regular, with more straight lines and right angles, than reality","Less regular, with fewer straight lines and right angles, than reality"], ans: 2, exp: "More regular, with more straight lines and right angles — cognitive maps tend to be systematically distorted toward regularity." },
+    { q: "Finke's principle of _____ states that mental imagery allows us to retrieve information that was not intentionally stored.", opts: ["Perceptual equivalence","Transformational equivalence","Implicit encoding","Structural encoding"], ans: 2, exp: "Implicit encoding — mental imagery allows retrieval of information not intentionally stored." },
+    { q: "A propositional representation is thought to be ______ in nature.", opts: ["Verbal","Visual","Both verbal and visual","Neither verbal nor visual"], ans: 3, exp: "Neither verbal nor visual — propositional representations are abstract and language-like but not sensory in form." }
+  ],
+  7: [
+    { q: "According to the ______ view of concepts, people categorize new instances by comparing them to representations of previously stored instances.", opts: ["Classical","Prototype","Exemplar","Schema"], ans: 2, exp: "Exemplar view — new instances are categorized by comparing them to stored examples in memory." },
+    { q: "According to the typicality effect, the statement 'A dog is a household pet' should be verified:", opts: ["Faster than 'a poodle is a household pet'","Faster than 'a dog is a living thing'","Faster than 'a ferret is a household pet'","Faster than 'a dog is an animal'"], ans: 2, exp: "Faster than 'a ferret is a household pet' — typical category members are verified more quickly than less typical ones (typicality effect)." },
+    { q: "Which of the following would be considered an example of a 'natural kind' concept?", opts: ["Blue","Wolf","Odd number","Mirror"], ans: 1, exp: "Wolf — natural kind concepts refer to naturally occurring categories found in the biological world." },
+    { q: "A schema for a routine event, such as going to the dentist, is called a:", opts: ["Concept","Script","Exemplar","Category"], ans: 1, exp: "A script is a schema representing the typical sequence of events in a routine situation." },
+    { q: "A ________ is a mental representation of some object, event, or pattern.", opts: ["Category","Concept","Script","Memory"], ans: 1, exp: "A concept is a mental representation of an object, event, or idea." },
+    { q: "A ______ can be defined as a class of similar things that share either an essential core, or some similarity in perceptual, biological, or functional properties.", opts: ["Category","Concept","Script","Schema"], ans: 0, exp: "A category is a class of similar items sharing core or overlapping features." },
+    { q: "Which of the following is NOT TRUE of the classical view of concepts?", opts: ["It proposes that concepts are mentally represented by list of features.","It assumes that membership in a category is clear-cut.","It accurately predicts the typicality effect.","'Necessity' and 'sufficient' features play an important role in the theory."], ans: 2, exp: "The classical view does NOT accurately predict the typicality effect — it assumes clear-cut category boundaries with no graded membership." },
+    { q: "Which of the following is a good example of a basic level of categorization?", opts: ["Musical instrument","Piano","Electronic keyboard","String instrument"], ans: 1, exp: "Piano is the basic level — the most cognitively efficient and commonly used level of categorization." },
+    { q: "If 'soda' is a basic-level category, then ______ would be a subordinate level.", opts: ["Soft drink","Beverage","Drink","Coca-Cola"], ans: 3, exp: "Coca-Cola is a subordinate category — more specific instances within a basic-level category." },
+    { q: "The ______ view of concepts argues that a person uses his/her theories about the way the world works to justify the classification of instances in the same category.", opts: ["Classical","Prototype","Knowledge based","Schema"], ans: 2, exp: "Knowledge-based view — categorization depends on a person's theories about how the world works." }
+  ],
+  2: [
+    { q: "A toy on the table represents:", opts: ["Distal stimulus","Proximal stimulus","Retinal image","Percept"], ans: 0, exp: "A toy on the table is the distal stimulus — the actual physical object in the environment that gives rise to sensory information." },
+    { q: "A patient with prosopagnosia has difficulty recognizing:", opts: ["Drawing of objects.","Moving objects.","Faces.","Sounds."], ans: 2, exp: "Prosopagnosia involves difficulty recognizing faces while other forms of object recognition remain relatively intact." },
+    { q: "When you let go of a balloon and it floats away, the retinal image gets smaller but you do not perceive it as shrinking. This is an example of:", opts: ["Pattern recognition.","Bottom-up processing.","Size constancy.","Figure-ground organization."], ans: 2, exp: "This illustrates size constancy — perception of an object's size remains stable despite changes in the size of its retinal image." },
+    { q: "The meaningful interpretation of a proximal stimulus is called the:", opts: ["Percept.","Sensation.","Distal stimulus.","Retinal Image"], ans: 0, exp: "A percept is the meaningful interpretation of sensory input derived from a proximal stimulus." },
+    { q: "The two best studied forms of perception are:", opts: ["Visual and Haptic","Visual and Olfactory","Visual and Auditory","Auditory and Olfactory"], ans: 2, exp: "Vision and audition are the most extensively studied perceptual systems in cognitive psychology." },
+    { q: "Which of the following represents a good example of a proximal stimulus?", opts: ["A book on a shelf.","A tree in your yard.","A building on the horizon.","The retinal image formed by a tree."], ans: 3, exp: "A proximal stimulus refers to the pattern of stimulation on the sensory receptors, such as the retinal image." },
+    { q: "According to Gibson's theory, the acts or behaviors permitted by objects, places, and events are called:", opts: ["Consequences","Functions","Affordances","Direct processes"], ans: 2, exp: "Gibson's theory defines affordances as the actions that objects or environments allow or invite." },
+    { q: "A stencil provides a good analogy for the theory of:", opts: ["Prototype matching.","Template matching.","Good continuation.","Featural analysis."], ans: 1, exp: "A stencil exemplifies template matching because recognition occurs through direct comparison with stored exact patterns." },
+    { q: "___________ are to visual perception what phonemes are to language, according to Biederman.", opts: ["Receptors","Retinas","Distal stimuli","Geons"], ans: 3, exp: "Geons are the basic components of object perception, analogous to phonemes in language, according to Biederman's theory." },
+    { q: "The principle governing reversible figures is:", opts: ["Figure-ground organization","Size constancy","Dimensionality","Retinal imagery"], ans: 0, exp: "Reversible figures depend on figure–ground organization, where perception alternates between competing interpretations." }
+  ],
+  4: [
+    { q: "Which of the following is NOT a component of Baddeley's working memory model?", opts: ["The phonological loop","The icon","The central executive","The visuospatial sketchpad"], ans: 1, exp: "Baddeley's working memory model consists of the phonological loop, visuospatial sketchpad, and central executive (later, episodic buffer). The icon belongs to iconic (sensory) memory, not working memory." },
+    { q: "Sternberg's classic work on searching for information from short-term memory indicated that the search process is:", opts: ["Serial","Self-terminating","Parallel","Both serial and exhaustive"], ans: 3, exp: "Sternberg showed that memory search proceeds item by item and continues through the entire set even after a match is found — a serial exhaustive search model." },
+    { q: "In the absence of rehearsal, short-term memory tends to:", opts: ["Last about 20 seconds","Last about 8 seconds","Decay slowly over 24 hours","Decay slowly over a week"], ans: 0, exp: "Without rehearsal, information in short-term memory fades rapidly within approximately 15–30 seconds." },
+    { q: "The suffix effect relates to which type of memory?", opts: ["Iconic","Echoic","Short term","Working"], ans: 1, exp: "The suffix effect occurs when an irrelevant sound disrupts recall of auditory information, demonstrating the brief persistence of echoic (auditory sensory) memory." },
+    { q: "Unattended information is stored briefly in:", opts: ["Sensory memory","Short term memory","Long term memory","Working memory"], ans: 0, exp: "Unattended information is briefly held in sensory memory before it fades. Only attended information proceeds to short-term or working memory." },
+    { q: "Retrieval involves:", opts: ["The activation of the senses","The translation of information into a form that can be stored","The storage of information over time","The calling to mind of previously stored information"], ans: 3, exp: "Retrieval refers to accessing stored information from long-term memory. It is distinct from encoding and storage." },
+    { q: "The primacy and recency effects in memory:", opts: ["Are thought to be due to the action of short-term memory","Are thought to be due to the action of long-term memory","Are thought to be due to the action of sensory memory","Can be independently manipulated, indicating at least two types of memory at work"], ans: 3, exp: "Primacy effects reflect long-term memory, while recency effects reflect short-term memory. Their independent manipulation supports multiple memory systems." },
+    { q: "Information in short-term memory is assumed to be coded primarily by:", opts: ["Sound","Meaning","Visual appearance","Both sound and meaning"], ans: 0, exp: "Short-term memory relies primarily on acoustic coding, as shown by confusion between similar-sounding items." },
+    { q: "Repeating a phone number to yourself to hold it in memory while you dial it would use which component of working memory?", opts: ["The visuospatial sketchpad","The phonological loop","The episodic buffer","Both the visuospatial sketchpad and the phonological loop"], ans: 1, exp: "The phonological loop maintains verbal information through rehearsal. Repeating a phone number relies on this verbal working memory system." },
+    { q: "Disrupting the process of long-term potentiation leads to:", opts: ["Disruption of learning and remembering","Recovery from anterograde amnesia","Recovery from retrograde amnesia","Language deficits"], ans: 0, exp: "Long-term potentiation strengthens synaptic connections. Disrupting LTP interferes with learning and long-term memory consolidation." }
+  ],
+  5: [
+    { q: "As classically conceived, long-term memory is held to have all of the following properties EXCEPT:", opts: ["It comprises a permanent or at least semipermanent store","It has virtually unlimited capacity","It primarily uses acoustic coding","Information stored within it is not always easily accessible"], ans: 2, exp: "Long-term memory does not primarily use acoustic coding — it relies mainly on semantic (meaning-based) encoding." },
+    { q: "Psychologists believe that the capacity of long-term memory is:", opts: ["unlimited","7 + 2 items","18 items","5000 items"], ans: 0, exp: "The capacity of long-term memory is considered virtually unlimited based on evidence from cognitive memory research." },
+    { q: "Which of the following are most likely to be confused in long-term memory?", opts: ["The letters P and R","The letters C and B","The words 'see' and 'bee'","The words 'big' and 'large'"], ans: 3, exp: "Words such as 'big' and 'large' are most likely to be confused in long-term memory because information is organized semantically." },
+    { q: "The code in long-term memory is based on:", opts: ["Sound","Visual imagery","Meaning","Both sound and visual imagery"], ans: 2, exp: "The dominant code in long-term memory is meaning rather than sound or visual appearance." },
+    { q: "Your memory for how to ride a bicycle is an example of ______ memory.", opts: ["Explicit","Implicit","Declarative","Procedural"], ans: 3, exp: "Memory for how to ride a bicycle is procedural memory, a form of implicit long-term memory." },
+    { q: "A retrieval cue will be most effective when it is highly distinctive or unusual, according to the principle of:", opts: ["Cue overload","Encoding specificity","Mood dependence","State dependence"], ans: 0, exp: "A retrieval cue is most effective when it is distinctive because multiple memories competing for the same cue reduce recall (cue overload)." },
+    { q: "Context effects and state-dependent learning effects occur:", opts: ["For recall tests only","For recognition tests only","For both recall and recognition","For paired associate tests only"], ans: 0, exp: "Context and state-dependent effects occur mainly in recall tasks because recall depends heavily on retrieval cues." },
+    { q: "Bahrick's study of retention of Spanish vocabulary words showed that large portions of information remained in long-term memory for:", opts: ["Several months","1-2 years","Up to 5 years","Over 50 years"], ans: 3, exp: "Research on foreign-language learning shows that substantial amounts of information can remain in long-term memory for over 50 years." },
+    { q: "Techniques designed to improve memory, often involving the use of visual imagery, are called:", opts: ["Mnemonics","Eidetic","Iconic","IQ enhancers"], ans: 0, exp: "Techniques that improve memory through imagery and organization are known as mnemonics." },
+    { q: "Your memory of your first college lecture would be an example of:", opts: ["Semantic memory","Episodic memory","Implicit memory","Working memory"], ans: 1, exp: "Memory of one's first college lecture is episodic memory — it involves recall of a personal experience tied to a specific context." }
+  ],
+  6: [
+    { q: "According to the notion of cognitive economy, a characteristic like 'has wings' would be stored along with which of the following semantic memory nodes?", opts: ["Bird","Ostrich","Hummingbird","All of the above"], ans: 0, exp: "According to cognitive economy, characteristic features are stored at the highest applicable level in the hierarchy — at the 'Bird' node." },
+    { q: "Priming in lexical decision tasks may be explained by the idea of:", opts: ["Episodic memory","Encoding specificity","Spreading activation","Typicality effects"], ans: 2, exp: "Spreading activation — priming occurs when activation spreads through related nodes in semantic memory." },
+    { q: "Which of the following is a good example of a superordinate level of categorization?", opts: ["Fruit","Banana","Fuji apple","Golden delicious apple"], ans: 0, exp: "Fruit represents the superordinate level in the hierarchical organization of concepts." },
+    { q: "The schema view of concept formation assumes that:", opts: ["There are clear boundaries among individual schemata","There is cognitive economy among concepts","Information is abstracted across instances","No information is stored about actual instances"], ans: 2, exp: "The schema view assumes general patterns are formed from multiple experiences — information is abstracted across instances." },
+    { q: "According to research by Collins and Quillian, the statement 'Siamese cats have blue eyes' will be verified:", opts: ["Slower than 'Siamese cats give birth to live young'","Faster than 'Siamese cats give birth to live young'","In the same amount of time","Slower than 'Siamese cats have tails'"], ans: 1, exp: "Specific subordinate properties like 'blue eyes' are verified faster than general hierarchical properties because they are directly linked." },
+    { q: "Conrad found that 'A shark can move' can be verified as fast as 'An animal can move.' These results suggest that reaction time is best predicted by:", opts: ["Cognitive economy","Frequency of associations","Encoding specificity","Episodic memory"], ans: 1, exp: "Reaction time is better predicted by associative strength (frequency of associations) than strict hierarchical distance." },
+    { q: "Which of the following would be a part of your declarative memory system?", opts: ["Knowing how to ride a bicycle","Knowing how to drive a car","Knowing how to react at a red light","Being able to name a hybrid car"], ans: 3, exp: "Being able to name a hybrid car is declarative memory — it involves consciously accessible factual knowledge." },
+    { q: "Collins and Loftus's spreading activation theory differs from the hierarchical network theory in that:", opts: ["It dispenses with the idea of cognitive economy","It relies on the assumption of hierarchical structure","It cannot account for the typicality effect","It makes stronger predictions than hierarchical models"], ans: 0, exp: "The spreading activation model dispenses with cognitive economy — it does not rely on strict hierarchical storage." },
+    { q: "'Characteristic features' and 'family resemblance' are important aspects of the _________ view of concepts.", opts: ["Classical","Prototype","Exemplar","Schema"], ans: 1, exp: "Characteristic features and family resemblance define the prototype view of concepts." },
+    { q: "Studies of semantic memory have shown that in a lexical decision task, people are faster at responding to 'bread' if it is paired with:", opts: ["'rencle'","'dog'","'island'","'butter'"], ans: 3, exp: "'Butter' — semantically related words facilitate faster lexical decisions through spreading activation." }
+  ],
+  1: [
+    { q: "The school of psychology known as functionalism, which emphasized the purposes of the mind's operations, was founded by:", opts: ["Wilhelm Wundt","John Watson","William James","Edward Titchener"], ans: 2, exp: "Functionalism was founded by William James, who emphasized understanding mental processes in terms of their adaptive purpose rather than their structure." },
+    { q: "The fact that you know you have seen the face before but cannot remember the name of the person, illustrates the cognitive process of:", opts: ["perception","attention","recognition","recall"], ans: 2, exp: "Knowing that a face is familiar without recalling the person's name illustrates recognition — identifying previously encountered information without retrieving contextual details." },
+    { q: "The term _________ refers to the relevance of the research to the \"real world.\"", opts: ["Internal validity","Evolutionary validity","Ecological validity","Neural validity"], ans: 2, exp: "Ecological validity refers to the extent to which research findings generalize to real-world situations outside laboratory settings." },
+    { q: "_______________ challenged the assumption that mental events were beyond the realm of scientific study.", opts: ["Cognitive revolution","Behaviorist rebellion","Human factor movements","Universal grammar"], ans: 0, exp: "The cognitive revolution challenged behaviorism by re-establishing the scientific study of internal mental processes and representations." },
+    { q: "Since the 1970s, various techniques of _________ have allowed us to construct pictures of the anatomy and functioning of intact brains.", opts: ["Genetic engineering","Brain Imaging","Neurosurgery","Brain lesioning"], ans: 1, exp: "Brain imaging techniques developed since the 1970s allow researchers to examine the structure and functioning of the intact human brain." },
+    { q: "Historians date the founding of scientific psychology to the 1879 laboratory of:", opts: ["William James","Wilhelm Wundt","John Locke","Edward Titchener"], ans: 1, exp: "Scientific psychology is dated to Wilhelm Wundt's 1879 laboratory, which marked the first systematic experimental study of mental processes." },
+    { q: "The term \"limited capacity processors\" suggests that:", opts: ["Humans have limited memory storage","Human beings can only do so many things at once","Neurons can only fire at a certain rate","Processing in the brain occurs in parallel"], ans: 1, exp: "The concept of limited-capacity processors means that human cognitive resources are finite, restricting simultaneous task performance." },
+    { q: "This psychologist sought to describe the intellectual structures underlying cognitive experience at different developmental points through an approach he called genetic epistemology:", opts: ["Galton","Skinner","Wundt","Piaget"], ans: 3, exp: "Jean Piaget's genetic epistemology explains how cognitive structures develop qualitatively across different stages of childhood." },
+    { q: "Clinical interviews are to introspection as ______ are to __________.", opts: ["Naturalistic observations; experiments","Naturalistic observations; quasi experiments","Controlled observations; naturalistic observations","Controlled observations; experiments"], ans: 2, exp: "Clinical interviews relate to introspection in the same way that controlled observations relate to naturalistic observations, differing in structure and experimental control." },
+    { q: "Which of the following is a basic assumption of the connectionist approach?", opts: ["Serial processing","Multiple stores where information is kept throughout processing","Networks of connections among simple processing units","A central processor that directs the flow of information"], ans: 2, exp: "The connectionist approach assumes cognition emerges from networks of interconnected simple processing units rather than a central processor." }
+  ],
+  3: [
+    { q: "According to Attenuation theory of Treisman, people tend to process:", opts: ["Only to the level of physical characteristics","Only to the level of linguistic characteristics, separating it into words","At a semantic level, analysing for meaning most of the time","Only as much as is necessary to separate the attended from the unattended message"], ans: 3, exp: "Treisman's Attenuation Theory states that unattended information is weakened rather than blocked and processed only if it exceeds a threshold." },
+    { q: "The \"cocktail party effect\" refers to the fact that shadowing performance is disrupted when _______ is embedded in the unattended message.", opts: ["Backward speech","The listener's name","A section of repeated words","Music"], ans: 1, exp: "Personally meaningful stimuli such as one's own name can break through selective attention even when presented in the unattended channel." },
+    { q: "In Kahneman's model of attention, allocation of mental resources is affected by preferences for certain kinds of tasks over others. These preferences are known as:", opts: ["Enduring dispositions","Arousal states","Late selected preferences","Momentary intentions"], ans: 0, exp: "Enduring dispositions are long-term attentional biases that influence how mental effort is allocated across tasks." },
+    { q: "The word \"cat\" is ______ by the phrase \"The dog chased the….\" That is, the word cat is especially ready to be recognized or attended to.", opts: ["filtered","attenuated","primed","suggested"], ans: 2, exp: "Contextual information activates related concepts in memory, increasing the likelihood of recognizing the expected word." },
+    { q: "When listening to a conversation, your attention is momentarily diverted when you hear your name spoken in a different conversation across the room. This is an example of the:", opts: ["filter effect","dichotic listening phenomenon","cocktail party effect","attenuation effect"], ans: 2, exp: "This effect demonstrates that unattended information can still be processed for meaning if it is highly salient or relevant." },
+    { q: "Which of the following would NOT be a reasonable basis for filtering, according to Broadbent's model?", opts: ["Whether the message was coming from your right or your left side","The pitch of the voice reading the message","The loudness of the voice reading the message","The language that the message was being read in"], ans: 3, exp: "Broadbent's filter model allows selection based only on physical features, not semantic properties such as language." },
+    { q: "Cognitive psychologists use all of the following as criteria for determining whether an activity is automatic EXCEPT:", opts: ["Whether it occurs intentionally","Whether it gives rise to conscious awareness","Whether it interferes with other activities","Whether it requires mental filtering"], ans: 3, exp: "Automatic processes are defined by lack of intention, minimal awareness, and low interference — not by filtering demands." },
+    { q: "Certain stimuli seem to jump off the page at the viewer, causing an involuntary shift of attention that is referred to as:", opts: ["The Stroop effect","Attentional capture","Attenuation","The cocktail party effect"], ans: 1, exp: "Salient stimuli can automatically draw attention without conscious intention or effort." },
+    { q: "Stroop interference lessens when:", opts: ["Participants are better readers.","Participants are given more practice at naming colours.","Participants are girls rather than boys.","Participants are encouraged to focus carefully."], ans: 1, exp: "Practice strengthens controlled processing and reduces interference from automatic word reading." },
+    { q: "Research on divided attention suggests that:", opts: ["Some people can multitask without any drop in performance.","There are no limits on the number of things that we can successfully do at once.","As individual tasks becomes more demanding, multitasking becomes more efficient.","If you think that you are doing two things simultaneously, you are probably really switching attention back and forth between the two."], ans: 3, exp: "Divided-attention research shows that performance declines because attention alternates rapidly between tasks." }
+  ],
+  11: [
+    { q: "Deductive reasoning involves which of the following?", opts: ["Going from general to specific statements","Conclusions that add new information to what is given","Going from specific to general statements","Going from specific to specific statements"], ans: 0, exp: "Deductive reasoning applies general rules to specific cases, going from general to specific statements." },
+    { q: "If a person has five letters in his or her name, then s/he is a Glirple. I can now validly assume that:", opts: ["Shawn is a Glirple","Shawn is a Glirple, and anyone who is not a Glirple cannot be name Susan","Anyone who is a Glirple must have five letters in his/her name","Anyone who is not a Glirple cannot be name Susan"], ans: 1, exp: "Shawn has 5 letters so is a Glirple. Susan also has 5 letters and would be a Glirple too, so non-Glirples cannot be named Susan is also valid." },
+    { q: "When we assess probability by judging the ease with which relevant examples come to mind, we are using the heuristic of:", opts: ["Representativeness","Availability","Framing","Hindsight"], ans: 1, exp: "Availability heuristic — probability is judged based on how easily examples come to mind." },
+    { q: "Which type of reasoning results in conclusions that contain new information?", opts: ["Inductive reasoning","Deductive reasoning","Invalid reasoning","Both inductive and deductive reasoning"], ans: 0, exp: "Inductive reasoning produces conclusions that add new information beyond the premises." },
+    { q: "If performed correctly, deductive reasoning can be said to have ______. This means that it is impossible for the premises to be true and the conclusion to be false.", opts: ["Inductive strength","Deductive strength","Inductive validity","Deductive validity"], ans: 3, exp: "Deductive validity ensures true premises cannot lead to a false conclusion." },
+    { q: "If a person has five letters in his/her name, then s/he is a Glirple. Angie now reasons that Fred cannot possibly be a Glirple. Angie has:", opts: ["Made a correct inference to modus ponens","Made a correct inference to modus tollens","Committed the fallacy of denying the antecedent","Committed the fallacy of affirming the consequent"], ans: 2, exp: "This is the fallacy of denying the antecedent — Fred has 4 letters so the reasoning incorrectly rejects the conclusion." },
+    { q: "When Wason's four-card task is replaced with an everyday problem about checking the identification of people who are drinking Coke and beer.", opts: ["People still neglect modus tollens in their responses","People turn over all the four cards instead of the two that are necessary and sufficient","People turn over only one card instead of the two that are necessary and sufficient","About 75% participants solve the problem correctly"], ans: 3, exp: "Realistic contexts improve reasoning performance — about 75% of participants solve the everyday version correctly." },
+    { q: "Some members of the Jones family are tall. Some tall people play basketball. Which of the following is true?", opts: ["Logically, some members of the Jones family play basketball","Logically, no members of the Jones family play basketball","Most people assume that some people of the Jones family play basketball","Most people assume that all members of the Jones family play basketball"], ans: 2, exp: "Most people assume some Jones family members play basketball even though it is not logically necessary." },
+    { q: "The ease of reasoning about an analogy depends on all of these factors EXCEPT:", opts: ["The difficulty of comprehending the individual terms in the analogy","The reasoner's knowledge about the individual terms","The difficulty of finding a relationship between the first two terms","The reasoner's amount of training in formal reasoning procedures"], ans: 3, exp: "Analogy depends more on understanding relations than on formal reasoning training." },
+    { q: "Which of the following is a difference between everyday reasoning and formal reasoning?", opts: ["In everyday reasoning, all premises are usually supplied","In everyday reasoning, there is typically one correct answer","In everyday reasoning, problems are solved as a means of achieving other goals","In formal reasoning, problems are not self-contained"], ans: 2, exp: "In everyday reasoning, problems are solved as a means of achieving other goals, unlike formal reasoning which is self-contained." }
+  ],
+  12: [
+    { q: "The gambler's fallacy is thought of as a special instance of:", opts: ["framing","availability","belief in the number of small numbers","hindsight"], ans: 2, exp: "Belief in the law of small numbers — the gambler's fallacy assumes small samples reflect true probabilities." },
+    { q: "You have just spent 10 minutes trying to figure out the answer to a single problem on your math quiz. In spite of your lack of success, you continue to struggle, neglecting other problems because you have already invested so much time and effort. You have fallen victim to:", opts: ["the sunk cost effect","a framing effect","the anchor effect","availability bias"], ans: 0, exp: "The sunk cost effect — continued effort is based on prior investment rather than future benefit." },
+    { q: "Normative models of decision making describe:", opts: ["how we ought to make decisions in realistic circumstances","ideal performance under ideal circumstances","what people actually do when they make decisions","cognitive illusions"], ans: 1, exp: "Normative models describe ideal performance under ideal circumstances — how decisions should logically be made." },
+    { q: "Past events seems \"inevitable\" due to the action of the:", opts: ["framing effect","hindsight bias","gambler's fallacy","availability heuristic"], ans: 1, exp: "Hindsight bias makes past events seem predictable after they have already occurred." },
+    { q: "Anita is blonde, extremely attractive and lives in an expensive condo. If we judge the probability of Anita's being a model as quite high because she resembles our stereotype of a model, we are using the heuristic of:", opts: ["representativeness","availability","framing","the law of small numbers"], ans: 0, exp: "Representativeness heuristic — probability is judged based on similarity to a stereotype." },
+    { q: "The mental activities that takes place in choosing among alternatives are collectively called:", opts: ["problem solving","inductive reasoning","deductive reasoning","decision making"], ans: 3, exp: "Decision making involves choosing among alternative courses of action." },
+    { q: "The tendency to seek out information that supports our current beliefs is called:", opts: ["believability effect","content effect","confirmation bias","syllogistic reasoning"], ans: 2, exp: "Confirmation bias — people tend to seek information that supports their existing beliefs." },
+    { q: "Which of the following is NOT one of the five phases of decision making, according to Galotti?", opts: ["Goal setting","Information gathering","Planning","Random choice"], ans: 3, exp: "Random choice is not part of Galotti's structured decision-making phases." },
+    { q: "According to psychologists, human decision making often falls short of optimality because:", opts: ["There is not enough information available to make a rational decision","One cannot be rational under conditions of uncertainty","The information available overwhelms the cognitive processes","Rationality assumes a higher degree of intelligence than most people have"], ans: 2, exp: "The information available overwhelms cognitive processes — human cognitive limits prevent optimal decisions." },
+    { q: "The phase of decision making finding a way to organize information is called:", opts: ["Goal setting","Planning","Structuring the decision","Evaluating"], ans: 2, exp: "Structuring the decision involves organizing information for evaluation." }
+  ]
+};
+
+const WEEKS = Object.keys(QUESTIONS).map(Number);
+
+// ════════════════════════════════════════════════
+//  STATE
+// ════════════════════════════════════════════════
+let state = {
+  mode: null,
+  selectedWeeks: [],
+  queue: [],          // {q, week, idx, isRepeat}
+  queueIndex: 0,
+  correct: 0,
+  wrong: 0,
+  answered: [],       // per original question
+  practiceWrongPool: [],
+  lastConfig: null
+};
+
+// ════════════════════════════════════════════════
+//  HOME SETUP
+// ════════════════════════════════════════════════
+function init() {
+  const chips = document.getElementById('weekChips');
+  chips.innerHTML = '';
+  WEEKS.forEach(w => {
+    const d = document.createElement('div');
+    d.className = 'week-chip';
+    d.textContent = `Week ${w}`;
+    d.dataset.week = w;
+    d.onclick = () => toggleWeek(d, w);
+    chips.appendChild(d);
+  });
+  document.getElementById('totalQCount').textContent = WEEKS.reduce((s,w) => s + QUESTIONS[w].length, 0);}
+
+function selectMode(el) {
+  document.querySelectorAll('.mode-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  state.mode = el.dataset.mode;
+
+  const panel = document.getElementById('weekPanel');
+  if (state.mode === 'full') {
+    panel.classList.remove('visible');
+    state.selectedWeeks = [...WEEKS];
+    checkStartReady();
+  } else if (state.mode === 'weekly') {
+    panel.classList.add('visible');
+    document.querySelectorAll('.week-chip').forEach(c => {
+      c.classList.remove('disabled');
+    });
+    // force single select
+    state.selectedWeeks = [];
+    document.querySelectorAll('.week-chip').forEach(c => c.classList.remove('selected'));
+    checkStartReady();
+  } else {
+    panel.classList.add('visible');
+    state.selectedWeeks = [];
+    document.querySelectorAll('.week-chip').forEach(c => {
+      c.classList.remove('selected', 'disabled');
+    });
+    checkStartReady();
+  }
+}
+
+function toggleWeek(el, week) {
+  if (el.classList.contains('disabled')) return;
+  if (state.mode === 'weekly') {
+    document.querySelectorAll('.week-chip').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    state.selectedWeeks = [week];
+  } else {
+    el.classList.toggle('selected');
+    if (el.classList.contains('selected')) {
+      state.selectedWeeks.push(week);
+    } else {
+      state.selectedWeeks = state.selectedWeeks.filter(w => w !== week);
+    }
+  }
+  checkStartReady();
+}
+
+function checkStartReady() {
+  const btn = document.getElementById('startBtn');
+  btn.disabled = !(state.mode && state.selectedWeeks.length > 0);
+}
+
+// ════════════════════════════════════════════════
+//  BUILD QUEUE
+// ════════════════════════════════════════════════
+function buildQueue() {
+  let items = [];
+  state.selectedWeeks.forEach(w => {
+    QUESTIONS[w].forEach((q, i) => {
+      items.push({ q, week: w, origIdx: i });
+    });
+  });
+
+  if (state.mode === 'weekly') {
+    // keep order
+  } else {
+    shuffle(items);
+  }
+  return items.map(it => ({ ...it, isRepeat: false }));
+}
+
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+// ════════════════════════════════════════════════
+//  START QUIZ
+// ════════════════════════════════════════════════
+function startQuiz() {
+  state.queue = buildQueue();
+  state.queueIndex = 0;
+  state.correct = 0;
+  state.wrong = 0;
+  state.answered = state.queue.map(() => null); // null | 'correct' | 'wrong'
+  state.practiceWrongPool = [];
+  state.lastConfig = { mode: state.mode, weeks: [...state.selectedWeeks] };
+
+  const modeLabels = { weekly: '📅 Week Quiz', random: '🔀 Random', full: '📋 Full Quiz', practice: '🔁 Practice' };
+  document.getElementById('topbarMode').textContent = modeLabels[state.mode];
+
+  buildTrackerUI();
+  showScreen('quiz');
+  renderQuestion();
+}
+
+// ════════════════════════════════════════════════
+//  TRACKER UI
+// ════════════════════════════════════════════════
+function buildTrackerUI() {
+  const grid = document.getElementById('trackerGrid');
+  grid.innerHTML = '';
+  state.queue.forEach((item, i) => {
+    const row = document.createElement('div');
+    row.className = 'tracker-row';
+    row.id = `tracker-${i}`;
+    row.style.cursor = 'pointer';
+    row.title = item.q.q.substring(0, 80);
+    row.innerHTML = `<div class="tracker-dot">${i+1}</div><div class="tracker-q-text">${item.q.q.substring(0, 35)}…</div>`;
+    row.onclick = () => jumpToQuestion(i);
+    // mark future rows as locked visually
+    if (i > state.queueIndex) row.classList.add('locked');
+    grid.appendChild(row);
+  });
+}
+
+function jumpToQuestion(idx) {
+  if (idx > state.queueIndex) return; // can't jump ahead
+  if (idx === state.queueIndex) return; // already here
+
+  const item = state.queue[idx];
+  const q = item.q;
+
+  document.getElementById('qNumber').textContent = `Q ${idx + 1}`;
+  document.getElementById('qWeekTag').textContent = `Week ${item.week}`;
+  document.getElementById('repeatTag').classList.toggle('show', !!item.isRepeat);
+  document.getElementById('qText').textContent = q.q;
+
+  const list = document.getElementById('optionsList');
+  list.innerHTML = '';
+  ['A','B','C','D'].forEach((lbl, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.disabled = true;
+    btn.innerHTML = `<span class="option-label">${lbl}</span><span>${q.opts[i]}</span>`;
+    if (i === q.ans) btn.classList.add('correct');
+    list.appendChild(btn);
+  });
+
+  document.getElementById('explanationText').textContent = q.exp;
+  document.getElementById('explanationBox').classList.add('show');
+
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.textContent = '← Back to Current';
+  nextBtn.classList.add('show');
+  nextBtn.onclick = () => {
+    nextBtn.textContent = 'Next →';
+    nextBtn.onclick = nextQuestion;
+    renderQuestion();
+  };
+}
+
+function updateTracker(idx, status) {
+  const row = document.getElementById(`tracker-${idx}`);
+  if (!row) return;
+  row.classList.remove('current', 'answered-correct', 'answered-wrong');
+  if (status === 'current') row.classList.add('current');
+  else if (status === 'correct') row.classList.add('answered-correct');
+  else if (status === 'wrong') row.classList.add('answered-wrong');
+}
+
+// ════════════════════════════════════════════════
+//  RENDER QUESTION
+// ════════════════════════════════════════════════
+function renderQuestion() {
+  const total = state.queue.length;
+  const idx = state.queueIndex;
+
+  if (idx >= total) {
+    if (state.mode === 'practice' && state.practiceWrongPool.length > 0) {
+      // append wrong questions again
+      const repeats = shuffle([...state.practiceWrongPool]).map(it => ({ ...it, isRepeat: true }));
+      state.practiceWrongPool = [];
+      state.queue.push(...repeats);
+      state.answered.push(...repeats.map(() => null));
+      buildTrackerUI();
+      // scroll to current
+    } else {
+      showResults();
+      return;
+    }
+  }
+
+  const item = state.queue[state.queueIndex];
+  const q = item.q;
+  const qTotal = state.queue.length;
+
+  // Progress
+  const attempted = state.correct + state.wrong;
+  const pct = qTotal > 0 ? Math.round((attempted / qTotal) * 100) : 0;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('pCurrent').textContent = state.queueIndex + 1;
+  document.getElementById('pTotal').textContent = qTotal;
+  document.getElementById('pCorrect').textContent = state.correct;
+  document.getElementById('pWrong').textContent = state.wrong;
+  document.getElementById('pRemaining').textContent = qTotal - state.queueIndex;
+  document.getElementById('pAccuracy').textContent = attempted > 0 ? Math.round((state.correct / attempted) * 100) + '%' : '—';
+
+  document.getElementById('qNumber').textContent = `Q ${state.queueIndex + 1}`;
+  document.getElementById('qWeekTag').textContent = `Week ${item.week}`;
+  document.getElementById('repeatTag').classList.toggle('show', !!item.isRepeat);
+  document.getElementById('qText').textContent = q.q;
+
+  // Options
+  const list = document.getElementById('optionsList');
+  list.innerHTML = '';
+  const labels = ['A', 'B', 'C', 'D'];
+  q.opts.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = `<span class="option-label">${labels[i]}</span><span>${opt}</span>`;
+    btn.onclick = () => handleAnswer(i, q.ans, q.exp);
+    list.appendChild(btn);
+  });
+
+  // Hide explanation & next
+  document.getElementById('explanationBox').classList.remove('show');
+  document.getElementById('nextBtn').classList.remove('show');
+
+  // Back button — show if not first question
+  const backBtn = document.getElementById('backBtn');
+  backBtn.classList.toggle('show', state.queueIndex > 0);
+
+  // If this question was already answered, restore its state
+  const prevAnswer = state.answered[state.queueIndex];
+  if (prevAnswer !== null && prevAnswer !== undefined) {
+    restoreAnsweredState(state.queueIndex);
+  }
+
+  // Tracker
+  updateTracker(state.queueIndex, 'current');
+}
+
+// ════════════════════════════════════════════════
+//  HANDLE ANSWER
+// ════════════════════════════════════════════════
+function handleAnswer(chosen, correct, exp) {
+  // If already answered (user went back), just show state — don't recount
+  if (state.answered[state.queueIndex] !== null && state.answered[state.queueIndex] !== undefined) return;
+
+  const btns = document.querySelectorAll('.option-btn');
+  btns.forEach(b => b.disabled = true);
+  btns[correct].classList.add('correct');
+
+  const isCorrect = chosen === correct;
+  if (!isCorrect) {
+    btns[chosen].classList.add('wrong');
+    state.wrong++;
+    if (state.mode === 'practice') {
+      state.practiceWrongPool.push(state.queue[state.queueIndex]);
+    }
+  } else {
+    state.correct++;
+  }
+
+  state.answered[state.queueIndex] = isCorrect ? 'correct' : 'wrong';
+  updateTracker(state.queueIndex, isCorrect ? 'correct' : 'wrong');
+
+  // Stats update
+  const attempted = state.correct + state.wrong;
+  document.getElementById('pCorrect').textContent = state.correct;
+  document.getElementById('pWrong').textContent = state.wrong;
+  document.getElementById('pAccuracy').textContent = Math.round((state.correct / attempted) * 100) + '%';
+
+  // Explanation
+  document.getElementById('explanationText').textContent = exp;
+  document.getElementById('explanationBox').classList.add('show');
+  document.getElementById('nextBtn').classList.add('show');
+}
+
+function prevQuestion() {
+  if (state.queueIndex > 0) {
+    state.queueIndex--;
+    renderQuestion();
+  }
+}
+
+function restoreAnsweredState(idx) {
+  const item = state.queue[idx];
+  const q = item.q;
+  const status = state.answered[idx];
+  const btns = document.querySelectorAll('.option-btn');
+  btns.forEach(b => b.disabled = true);
+  btns[q.ans].classList.add('correct');
+  // find which was the chosen wrong answer — we don't track it, so just mark correct
+  if (status === 'wrong') {
+    // highlight correct only; user knows they got it wrong
+  }
+  document.getElementById('explanationText').textContent = q.exp;
+  document.getElementById('explanationBox').classList.add('show');
+  document.getElementById('nextBtn').classList.add('show');
+}
+
+// ════════════════════════════════════════════════
+//  NEXT
+// ════════════════════════════════════════════════
+function nextQuestion() {
+  state.queueIndex++;
+  renderQuestion();
+}
+
+// ════════════════════════════════════════════════
+//  RESULTS
+// ════════════════════════════════════════════════
+function showResults() {
+  const total = state.correct + state.wrong;
+  const pct = total > 0 ? Math.round((state.correct / total) * 100) : 0;
+
+  const emoji = pct >= 80 ? '🎉' : pct >= 60 ? '👍' : pct >= 40 ? '📚' : '💪';
+  const title = pct >= 80 ? 'Excellent Work!' : pct >= 60 ? 'Good Job!' : pct >= 40 ? 'Keep Studying!' : 'Keep Practicing!';
+
+  document.getElementById('resEmoji').textContent = emoji;
+  document.getElementById('resTitle').textContent = title;
+  document.getElementById('resSub').textContent = `You answered ${total} question${total !== 1 ? 's' : ''}`;
+  document.getElementById('resScore').textContent = pct + '%';
+  document.getElementById('resCorrect').textContent = state.correct;
+  document.getElementById('resWrong').textContent = state.wrong;
+
+  // Review
+  const reviewList = document.getElementById('reviewList');
+  reviewList.innerHTML = '';
+  state.queue.forEach((item, i) => {
+    const status = state.answered[i];
+    if (status === null) return;
+    const q = item.q;
+    const div = document.createElement('div');
+    div.className = `review-item ${status}`;
+    const chosenText = '—'; // we don't track chosen, just correct/wrong
+    div.innerHTML = `
+      <div class="review-q">${item.isRepeat ? '<em style="color:var(--yellow);font-style:normal;font-size:11px;">↻ Repeat · </em>' : ''}${q.q}</div>
+      <div class="review-answer">
+        Correct answer: <span class="correct-ans">${['A','B','C','D'][q.ans]}. ${q.opts[q.ans]}</span>
+        ${status === 'wrong' ? ' · <span class="wrong-ans">You answered incorrectly</span>' : ''}
+      </div>`;
+    reviewList.appendChild(div);
+  });
+
+  showScreen('results');
+}
+
+// ════════════════════════════════════════════════
+//  NAV
+// ════════════════════════════════════════════════
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function goHome() { showScreen('home'); }
+function quitQuiz() { if (confirm('Quit this session?')) goHome(); }
+function retryQuiz() {
+  if (!state.lastConfig) { goHome(); return; }
+  state.mode = state.lastConfig.mode;
+  state.selectedWeeks = [...state.lastConfig.weeks];
+  startQuiz();
+}
+
+// ════════════════════════════════════════════════
+//  BOOT
+// ════════════════════════════════════════════════
+init();
+</script>
+</body>
+</html>
